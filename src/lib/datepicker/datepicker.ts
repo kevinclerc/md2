@@ -13,8 +13,8 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
   NgZone,
-  Self,
-} from '@angular/core';
+  Self
+} from "@angular/core";
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -23,31 +23,30 @@ import {
   ValidationErrors,
   Validator,
   ValidatorFn,
-  Validators,
-} from '@angular/forms';
-import { coerceBooleanProperty } from '../core';
-import { Overlay } from '../core/overlay/overlay';
-import { OverlayRef } from '../core/overlay/overlay-ref';
-import { ComponentPortal } from '../core/portal/portal';
-import { OverlayState } from '../core/overlay/overlay-state';
-import { Dir } from '../core/rtl/dir';
-import { PositionStrategy } from '../core/overlay/position/position-strategy';
-import { Subscription } from 'rxjs/Subscription';
-import { DateAdapter } from '../core/datetime/index';
-import { ESCAPE } from '../core/keyboard/keycodes';
-import { Md2Calendar } from './calendar';
-import { DateLocale } from './date-locale';
-import { DateUtil } from './date-util';
-import 'rxjs/add/operator/first';
+  Validators
+} from "@angular/forms";
+import { coerceBooleanProperty } from "../core";
+import { Overlay } from "../core/overlay/overlay";
+import { OverlayRef } from "../core/overlay/overlay-ref";
+import { ComponentPortal } from "../core/portal/portal";
+import { OverlayState } from "../core/overlay/overlay-state";
+import { Dir } from "../core/rtl/dir";
+import { PositionStrategy } from "../core/overlay/position/position-strategy";
+import { Subscription } from "rxjs/Subscription";
+import { DateAdapter } from "../core/datetime/index";
+import { ESCAPE } from "../core/keyboard/keycodes";
+import { Md2Calendar } from "./calendar";
+import { DateLocale } from "./date-locale";
+import { DateUtil } from "./date-util";
+import "rxjs/add/operator/first";
 
 /** Change event object emitted by Md2Select. */
 export class Md2DateChange {
-  constructor(public source: Md2Datepicker, public value: Date) { }
+  constructor(public source: Md2Datepicker, public value: Date) {}
 }
 
 /** Used to generate a unique ID for each datepicker instance. */
 let datepickerUid = 0;
-
 
 /**
  * Component used as the content for the datepicker dialog and popup. We use this instead of using
@@ -58,16 +57,16 @@ let datepickerUid = 0;
  */
 @Component({
   moduleId: module.id,
-  selector: 'md2-datepicker-content',
-  templateUrl: 'datepicker-content.html',
-  styleUrls: ['datepicker-content.css'],
+  selector: "md2-datepicker-content",
+  templateUrl: "datepicker-content.html",
+  styleUrls: ["datepicker-content.css"],
   host: {
-    'class': 'md2-datepicker-content',
-    '[class.md2-datepicker-content-touch]': 'datepicker?.touchUi',
-    '(keydown)': '_handleKeydown($event)',
+    class: "md2-datepicker-content",
+    "[class.md2-datepicker-content-touch]": "datepicker?.touchUi",
+    "(keydown)": "_handleKeydown($event)"
   },
   encapsulation: ViewEncapsulation.None,
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Md2DatepickerContent {
   datepicker: Md2Datepicker;
@@ -92,7 +91,6 @@ export class Md2DatepickerContent {
   }
 }
 
-
 export const MD2_DATEPICKER_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => Md2Datepicker),
@@ -108,25 +106,24 @@ export const MD2_DATEPICKER_VALIDATORS: any = {
 /* Component responsible for managing the datepicker popup/dialog. */
 @Component({
   moduleId: module.id,
-  selector: 'md2-datepicker',
-  templateUrl: 'datepicker.html',
-  styleUrls: ['datepicker.css'],
+  selector: "md2-datepicker",
+  templateUrl: "datepicker.html",
+  styleUrls: ["datepicker.css"],
   providers: [MD2_DATEPICKER_VALUE_ACCESSOR, MD2_DATEPICKER_VALIDATORS],
   host: {
-    'role': 'datepicker',
-    '[class.md2-datepicker-disabled]': 'disabled',
-    '[class.md2-datepicker-opened]': 'opened',
-    '[attr.aria-label]': 'placeholder',
-    '[attr.aria-required]': 'required.toString()',
-    '[attr.aria-disabled]': 'disabled.toString()',
+    role: "datepicker",
+    "[class.md2-datepicker-disabled]": "disabled",
+    "[class.md2-datepicker-opened]": "opened",
+    "[attr.aria-label]": "placeholder",
+    "[attr.aria-required]": "required.toString()",
+    "[attr.aria-disabled]": "disabled.toString()"
   },
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
-
-  _onChange: (value: any) => void = () => { };
-  _onTouched = () => { };
-  _validatorOnChange = () => { };
+  _onChange: (value: any) => void = () => {};
+  _onTouched = () => {};
+  _validatorOnChange = () => {};
 
   _inputFocused: boolean = false;
 
@@ -134,7 +131,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   @Input() startAt: Date;
 
   /** The view that the calendar should start in. */
-  @Input() startView: 'clock' | 'month' | 'year' = 'month';
+  @Input() startView: "clock" | "month" | "year" = "month";
 
   /**
    * Whether the calendar UI is in touch mode. In touch mode the calendar opens in a dialog rather
@@ -142,24 +139,35 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    */
   @Input() touchUi = false;
   @Input() tabindex: number = 0;
-  @Input() mode: 'auto' | 'portrait' | 'landscape' = 'auto';
+  @Input() mode: "auto" | "portrait" | "landscape" = "auto";
   @Input() placeholder: string;
   @Input() timeInterval: number = 1;
   @Input() id: string;
 
   @Input()
-  get type() { return this._type; }
-  set type(value: 'date' | 'time' | 'month' | 'datetime') {
-    this._type = value || 'date';
+  get type() {
+    return this._type;
+  }
+  set type(value: "date" | "time" | "month" | "datetime") {
+    this._type = value || "date";
     this._inputValue = this._formatDate(this._value);
   }
-  private _type: 'date' | 'time' | 'month' | 'datetime' = 'date';
+  private _type: "date" | "time" | "month" | "datetime" = "date";
 
   @Input()
   get format() {
-    return this._format || (this.type === 'month' ? 'MMMM y' : this.type === 'date' ?
-      'dd/MM/y' : this.type === 'time' ? 'HH:mm' : this.type === 'datetime' ?
-        'dd/MM/y HH:mm' : 'dd/MM/y');
+    return (
+      this._format ||
+      (this.type === "month"
+        ? "MMMM y"
+        : this.type === "date"
+        ? "dd/MM/y"
+        : this.type === "time"
+        ? "HH:mm"
+        : this.type === "datetime"
+        ? "dd/MM/y HH:mm"
+        : "dd/MM/y")
+    );
   }
   set format(value: string) {
     if (this._format !== value) {
@@ -171,7 +179,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** The minimum valid date. */
   @Input()
-  get min(): Date { return this._minDate; }
+  get min(): Date {
+    return this._minDate;
+  }
   set min(value: Date) {
     this._minDate = value;
     this._validatorOnChange();
@@ -180,7 +190,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** The maximum valid date. */
   @Input()
-  get max(): Date { return this._maxDate; }
+  get max(): Date {
+    return this._maxDate;
+  }
   set max(value: Date) {
     this._maxDate = value;
     this._validatorOnChange();
@@ -194,17 +206,27 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   _dateFilter: (date: Date | null) => boolean;
 
   @Input()
-  get required(): boolean { return this._required; }
-  set required(value) { this._required = coerceBooleanProperty(value); }
+  get required(): boolean {
+    return this._required;
+  }
+  set required(value) {
+    this._required = coerceBooleanProperty(value);
+  }
   private _required: boolean = false;
 
   @Input()
-  get disabled(): boolean { return this._disabled; }
-  set disabled(value) { this._disabled = coerceBooleanProperty(value); }
+  get disabled(): boolean {
+    return this._disabled;
+  }
+  set disabled(value) {
+    this._disabled = coerceBooleanProperty(value);
+  }
   private _disabled: boolean = false;
 
   @Input()
-  get value() { return this._value; }
+  get value() {
+    return this._value;
+  }
   set value(value: Date) {
     this._value = this.coerceDateProperty(value);
     this._selected = this._value;
@@ -215,16 +237,22 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   }
   private _value: Date;
 
-  _inputValue: string = '';
+  _inputValue: string = "";
 
   @Input()
-  get openOnFocus(): boolean { return this._openOnFocus; }
-  set openOnFocus(value: boolean) { this._openOnFocus = coerceBooleanProperty(value); }
+  get openOnFocus(): boolean {
+    return this._openOnFocus;
+  }
+  set openOnFocus(value: boolean) {
+    this._openOnFocus = coerceBooleanProperty(value);
+  }
   private _openOnFocus: boolean;
 
   @Input()
   set isOpen(value: boolean) {
-    if (value && !this.opened) { this.open(); }
+    if (value && !this.opened) {
+      this.open();
+    }
   }
 
   /** Event emitted when the select has been opened. */
@@ -258,36 +286,36 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** The form control validator for the min date. */
   private _minValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return (!this.min || !control.value ||
-      this._util.compareDate(this.min, control.value) <= 0) ?
-      null : { 'md2DatepickerMin': { 'min': this.min, 'actual': control.value } };
-  }
+    return !this.min || !control.value || this._util.compareDate(this.min, control.value) <= 0
+      ? null
+      : { md2DatepickerMin: { min: this.min, actual: control.value } };
+  };
 
   /** The form control validator for the max date. */
   private _maxValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return (!this.max || !control.value ||
-      this._util.compareDate(this.max, control.value) >= 0) ?
-      null : { 'md2DatepickerMax': { 'max': this.max, 'actual': control.value } };
-  }
+    return !this.max || !control.value || this._util.compareDate(this.max, control.value) >= 0
+      ? null
+      : { md2DatepickerMax: { max: this.max, actual: control.value } };
+  };
 
   /** The form control validator for the date filter. */
   private _filterValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-    return !this._dateFilter || !control.value || this._dateFilter(control.value) ?
-      null : { 'md2DatepickerFilter': true };
-  }
+    return !this._dateFilter || !control.value || this._dateFilter(control.value) ? null : { md2DatepickerFilter: true };
+  };
 
   /** The combined form control validator for this input. */
-  private _validator: ValidatorFn =
-  Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
+  private _validator: ValidatorFn = Validators.compose([this._minValidator, this._maxValidator, this._filterValidator]);
 
-  constructor(private _element: ElementRef,
+  constructor(
+    private _element: ElementRef,
     private _overlay: Overlay,
     private _ngZone: NgZone,
     private _viewContainerRef: ViewContainerRef,
     private _locale: DateLocale,
     private _util: DateUtil,
-    @Optional() private _dir: Dir) {
-    this.id = (this.id) ? this.id : `md2-datepicker-${datepickerUid++}`;
+    @Optional() private _dir: Dir
+  ) {
+    this.id = this.id ? this.id : `md2-datepicker-${datepickerUid++}`;
   }
 
   ngOnDestroy() {
@@ -315,9 +343,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     this.value = value;
   }
 
-  registerOnChange(fn: (value: any) => void): void { this._onChange = fn; }
+  registerOnChange(fn: (value: any) => void): void {
+    this._onChange = fn;
+  }
 
-  registerOnTouched(fn: () => {}): void { this._onTouched = fn; }
+  registerOnTouched(fn: () => {}): void {
+    this._onTouched = fn;
+  }
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
@@ -341,21 +373,15 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
       date = this._util.parse(el.value);
     }
     if (date != null && date.getTime && !isNaN(date.getTime())) {
-
       let d: Date = new Date(this.value);
-      if (this.type !== 'time') {
+      if (this.type !== "time") {
         d.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
       }
-      if (this.type !== 'date') {
+      if (this.type !== "date") {
         d.setHours(date.getHours(), date.getMinutes());
       }
       if (!this._util.isSameMinute(this.value, d)) {
-        this.value = this._util.createDate(d.getFullYear(),
-          d.getMonth(),
-          d.getDate(),
-          d.getHours(),
-          d.getMinutes(),
-          d.getSeconds());
+        this.value = this._util.createDate(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds());
         this._emitChangeEvent();
       }
     } else {
@@ -372,8 +398,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     if (value != null && value.getTime && !isNaN(value.getTime())) {
       v = value;
     } else {
-      if (value && this.type === 'time') {
-        let t = value + '';
+      if (value && this.type === "time") {
+        let t = value + "";
         v = new Date();
         v.setHours(parseInt(t.substring(0, 2)));
         v.setMinutes(parseInt(t.substring(3, 5)));
@@ -382,12 +408,9 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
         v = isNaN(timestamp) ? null : new Date(timestamp);
       }
     }
-    let d: Date = v ? this._util.createDate(v.getFullYear(),
-      v.getMonth(),
-      v.getDate(),
-      v.getHours(),
-      v.getMinutes(),
-      v.getSeconds()) : null;
+    let d: Date = v
+      ? this._util.createDate(v.getFullYear(), v.getMonth(), v.getDate(), v.getHours(), v.getMinutes(), v.getSeconds())
+      : null;
     return d;
   }
 
@@ -397,70 +420,67 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
    * @return string with formatted date
    */
   private _formatDate(date: Date): string {
-    if (!this.format || !date) { return ''; }
+    if (!this.format || !date) {
+      return "";
+    }
 
     let format = this.format;
 
     /* Years */
-    if (format.indexOf('yy') > -1) {
-      format = format.replace('yy', ('00' + this._util.getYear(date)).slice(-2));
-    } else if (format.indexOf('y') > -1) {
-      format = format.replace('y', '' + this._util.getYear(date));
+    if (format.indexOf("yy") > -1) {
+      format = format.replace("yy", ("00" + this._util.getYear(date)).slice(-2));
+    } else if (format.indexOf("y") > -1) {
+      format = format.replace("y", "" + this._util.getYear(date));
     }
 
     /* Days */
-    if (format.indexOf('dd') > -1) {
-      format = format.replace('dd', ('0' + this._util.getDate(date)).slice(-2));
-    } else if (format.indexOf('d') > -1) {
-      format = format.replace('d', '' + this._util.getDate(date));
+    if (format.indexOf("dd") > -1) {
+      format = format.replace("dd", ("0" + this._util.getDate(date)).slice(-2));
+    } else if (format.indexOf("d") > -1) {
+      format = format.replace("d", "" + this._util.getDate(date));
     }
 
     /* Hours */
     if (/[aA]/.test(format)) {
       /* 12-hour */
-      if (format.indexOf('HH') > -1) {
-        format = format.replace('HH',
-          ('0' + this._getHours12(this._util.getHours(date))).slice(-2));
-      } else if (format.indexOf('H') > -1) {
-        format = format.replace('H',
-          '' + this._getHours12(this._util.getHours(date)));
+      if (format.indexOf("HH") > -1) {
+        format = format.replace("HH", ("0" + this._getHours12(this._util.getHours(date))).slice(-2));
+      } else if (format.indexOf("H") > -1) {
+        format = format.replace("H", "" + this._getHours12(this._util.getHours(date)));
       }
-      format = format.replace('A', ((this._util.getHours(date) < 12) ? 'AM' : 'PM'))
-        .replace('a', ((this._util.getHours(date) < 12) ? 'am' : 'pm'));
+      format = format.replace("A", this._util.getHours(date) < 12 ? "AM" : "PM").replace("a", this._util.getHours(date) < 12 ? "am" : "pm");
     } else {
       /* 24-hour */
-      if (format.indexOf('HH') > -1) {
-        format = format.replace('HH', ('0' + this._util.getHours(date)).slice(-2));
-      } else if (format.indexOf('H') > -1) {
-        format = format.replace('H', '' + this._util.getHours(date));
+      if (format.indexOf("HH") > -1) {
+        format = format.replace("HH", ("0" + this._util.getHours(date)).slice(-2));
+      } else if (format.indexOf("H") > -1) {
+        format = format.replace("H", "" + this._util.getHours(date));
       }
     }
 
     /* Minutes */
-    if (format.indexOf('mm') > -1) {
-      format = format.replace('mm', ('0' + this._util.getMinutes(date)).slice(-2));
-    } else if (format.indexOf('m') > -1) {
-      format = format.replace('m', '' + this._util.getMinutes(date));
+    if (format.indexOf("mm") > -1) {
+      format = format.replace("mm", ("0" + this._util.getMinutes(date)).slice(-2));
+    } else if (format.indexOf("m") > -1) {
+      format = format.replace("m", "" + this._util.getMinutes(date));
     }
 
     /* Seconds */
-    if (format.indexOf('ss') > -1) {
-      format = format.replace('ss', ('0' + this._util.getSeconds(date)).slice(-2));
-    } else if (format.indexOf('s') > -1) {
-      format = format.replace('s', '' + this._util.getSeconds(date));
+    if (format.indexOf("ss") > -1) {
+      format = format.replace("ss", ("0" + this._util.getSeconds(date)).slice(-2));
+    } else if (format.indexOf("s") > -1) {
+      format = format.replace("s", "" + this._util.getSeconds(date));
     }
 
     /* Months */
-    if (format.indexOf('MMMM') > -1) {
-      format = format.replace('MMMM',
-        this._locale.getMonthNames('long')[this._util.getMonth(date)]);
-    } else if (format.indexOf('MMM') > -1) {
-      format = format.replace('MMM',
-        this._locale.getMonthNames('short')[this._util.getMonth(date)]);
-    } else if (format.indexOf('MM') > -1) {
-      format = format.replace('MM', ('0' + (this._util.getMonth(date) + 1)).slice(-2));
-    } else if (format.indexOf('M') > -1) {
-      format = format.replace('M', '' + (this._util.getMonth(date) + 1));
+    if (format.indexOf("MMMM") > -1) {
+      format = format.replace("MMMM", this._locale.getMonthNames("long")[this._util.getMonth(date)]);
+    } else if (format.indexOf("MMM") > -1) {
+      format = format.replace("MMM", this._locale.getMonthNames("short")[this._util.getMonth(date)]);
+    } else if (format.indexOf("MM") > -1) {
+      format = format.replace("MM", ("0" + (this._util.getMonth(date) + 1)).slice(-2));
+    } else if (format.indexOf("M") > -1) {
+      format = format.replace("M", "" + (this._util.getMonth(date) + 1));
     }
 
     return format;
@@ -498,11 +518,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** Open the calendar. */
   open(): void {
-    if (this.opened) { return; }
-
-    if (!this._calendarPortal) {
-      this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
+    if (this.opened) {
+      return;
     }
+
+    this._calendarPortal = new ComponentPortal(Md2DatepickerContent, this._viewContainerRef);
 
     this.touchUi ? this._openAsDialog() : this._openAsPopup();
     this.opened = true;
@@ -534,8 +554,7 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     }
 
     if (!this._dialogRef.hasAttached()) {
-      let componentRef: ComponentRef<Md2DatepickerContent> =
-        this._dialogRef.attach(this._calendarPortal);
+      let componentRef: ComponentRef<Md2DatepickerContent> = this._dialogRef.attach(this._calendarPortal);
       componentRef.instance.datepicker = this;
     }
 
@@ -544,18 +563,13 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** Open the calendar as a popup. */
   private _openAsPopup(): void {
-    if (!this._popupRef) {
-      this._createPopup();
-    }
+    this._createPopup();
 
-    if (!this._popupRef.hasAttached()) {
-      let componentRef: ComponentRef<Md2DatepickerContent> =
-        this._popupRef.attach(this._calendarPortal);
-      componentRef.instance.datepicker = this;
+    let componentRef: ComponentRef<Md2DatepickerContent> = this._popupRef.attach(this._calendarPortal);
+    componentRef.instance.datepicker = this;
 
-      /* Update the position once the calendar has rendered. */
-      this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
-    }
+    /* Update the position once the calendar has rendered. */
+    this._ngZone.onStable.first().subscribe(() => this._popupRef.updatePosition());
 
     this._popupRef.backdropClick().subscribe(() => this.close());
   }
@@ -563,12 +577,14 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
   /** Create the dialog. */
   private _createDialog(): void {
     const overlayState = new OverlayState();
-    overlayState.positionStrategy = this._overlay.position().global()
+    overlayState.positionStrategy = this._overlay
+      .position()
+      .global()
       .centerHorizontally()
       .centerVertically();
     overlayState.hasBackdrop = true;
-    overlayState.backdropClass = 'cdk-overlay-dark-backdrop';
-    overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    overlayState.backdropClass = "cdk-overlay-dark-backdrop";
+    overlayState.direction = this._dir ? this._dir.value : "ltr";
     this._dialogRef = this._overlay.create(overlayState);
   }
 
@@ -577,8 +593,8 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
     const overlayState = new OverlayState();
     overlayState.positionStrategy = this._createPopupPositionStrategy();
     overlayState.hasBackdrop = true;
-    overlayState.backdropClass = 'cdk-overlay-transparent-backdrop';
-    overlayState.direction = this._dir ? this._dir.value : 'ltr';
+    overlayState.backdropClass = "cdk-overlay-transparent-backdrop";
+    overlayState.direction = this._dir ? this._dir.value : "ltr";
     overlayState.scrollStrategy = this._overlay.scrollStrategies.reposition();
 
     this._popupRef = this._overlay.create(overlayState);
@@ -586,18 +602,11 @@ export class Md2Datepicker implements OnDestroy, ControlValueAccessor {
 
   /** Create the popup PositionStrategy. */
   private _createPopupPositionStrategy(): PositionStrategy {
-    return this._overlay.position()
-      .connectedTo(this._element,
-      { originX: 'start', originY: 'bottom' },
-      { overlayX: 'start', overlayY: 'top' })
-      .withFallbackPosition(
-      { originX: 'start', originY: 'top' },
-      { overlayX: 'start', overlayY: 'bottom' })
-      .withFallbackPosition(
-      { originX: 'end', originY: 'bottom' },
-      { overlayX: 'end', overlayY: 'top' })
-      .withFallbackPosition(
-      { originX: 'end', originY: 'top' },
-      { overlayX: 'end', overlayY: 'bottom' });
+    return this._overlay
+      .position()
+      .connectedTo(this._element, { originX: "start", originY: "bottom" }, { overlayX: "start", overlayY: "top" })
+      .withFallbackPosition({ originX: "start", originY: "top" }, { overlayX: "start", overlayY: "bottom" })
+      .withFallbackPosition({ originX: "end", originY: "bottom" }, { overlayX: "end", overlayY: "top" })
+      .withFallbackPosition({ originX: "end", originY: "top" }, { overlayX: "end", overlayY: "bottom" });
   }
 }
